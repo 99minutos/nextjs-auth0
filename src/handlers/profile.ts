@@ -65,7 +65,10 @@ export default function profileHandler(
         ...session,
         user: {
           ...session.user,
-          ...userInfo
+          ...userInfo,
+          stations: [
+            {'name': 'MEX'}
+          ]
         }
       }) as Session;
 
