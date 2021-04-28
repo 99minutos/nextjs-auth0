@@ -60,15 +60,24 @@ export default function profileHandler(
 
       const client = await getClient();
       const userInfo = await client.userinfo(accessToken);
+      let additionalInfo = {};
+
+      try {
+        console.log('FETCHING');
+        additionalInfo = await fetch(process.env.CLAIMS_URL || '', {
+          method: 'POST',
+          body: JSON.stringify(userInfo)
+        });
+      } catch (e) {
+        console.log('ERROR WHILE FETCHING');
+      }
 
       let newSession = fromJson({
         ...session,
         user: {
           ...session.user,
           ...userInfo,
-          stations: [
-            {'name': 'MEX'}
-          ]
+          ...additionalInfo
         }
       }) as Session;
 
