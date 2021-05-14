@@ -75,6 +75,11 @@ export interface Config {
   baseURL: string;
 
   /**
+   * The root URL for the application router, eg https://localhost
+   */
+  profileURL: string;
+
+  /**
    * The Client ID for your application.
    */
   clientID: string;

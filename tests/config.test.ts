@@ -8,6 +8,7 @@ const getConfigWithEnv = (env: any = {}, opts?: any): { baseConfig: BaseConfig; 
       AUTH0_SECRET: '__long_super_secret_secret__',
       AUTH0_ISSUER_BASE_URL: 'https://example.auth0.com',
       AUTH0_BASE_URL: 'https://example.com',
+      AUTH0_CLIENT_PROFILE: 'https://example.com',
       AUTH0_CLIENT_ID: '__test_client_id__',
       AUTH0_CLIENT_SECRET: '__test_client_secret__'
     },
@@ -29,6 +30,7 @@ describe('config params', () => {
       secret: '__long_super_secret_secret__',
       issuerBaseURL: 'https://example.auth0.com',
       baseURL: 'https://example.com',
+      profileURL: 'https://example.com',
       clientID: '__test_client_id__',
       clientSecret: '__test_client_secret__',
       clockTolerance: 60,

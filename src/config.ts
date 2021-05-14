@@ -64,6 +64,14 @@ export interface BaseConfig {
   baseURL: string;
 
   /**
+   * The root URL for the application router, eg https://localhost
+   * You can also use the AUTH0_BASE_URL environment variable.
+   * If you provide a domain, we will prefix it with `https://` - This can be useful when assigning it to
+   * `VERCEL_URL` for Vercel deploys
+   */
+  profileURL: string;
+
+  /**
    * The Client ID for your application.
    * You can also use the AUTH0_CLIENT_ID environment variable.
    */
@@ -433,7 +441,8 @@ export const getConfig = (params: ConfigParameters = {}): { baseConfig: BaseConf
     AUTH0_COOKIE_TRANSIENT,
     AUTH0_COOKIE_HTTP_ONLY,
     AUTH0_COOKIE_SECURE,
-    AUTH0_COOKIE_SAME_SITE
+    AUTH0_COOKIE_SAME_SITE,
+    AUTH0_CLIENT_PROFILE
   } = process.env;
 
   const baseURL =
@@ -445,6 +454,7 @@ export const getConfig = (params: ConfigParameters = {}): { baseConfig: BaseConf
     secret: AUTH0_SECRET,
     issuerBaseURL: AUTH0_ISSUER_BASE_URL,
     baseURL: baseURL,
+    profileURL: AUTH0_CLIENT_PROFILE,
     clientID: AUTH0_CLIENT_ID,
     clientSecret: AUTH0_CLIENT_SECRET,
     clockTolerance: num(AUTH0_CLOCK_TOLERANCE),
