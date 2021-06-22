@@ -132,6 +132,7 @@ const paramsSchema = Joi.object({
   idTokenSigningAlg: Joi.string().insensitive().not('none').optional().default('RS256'),
   issuerBaseURL: Joi.string().uri().required(),
   profileURL: Joi.string().uri().optional(),
+  permissionsURL: Joi.string().uri().optional(),
   legacySameSiteCookie: Joi.boolean().optional().default(true),
   routes: Joi.object({
     callback: Joi.string().uri({ relativeOnly: true }).required(),

@@ -72,6 +72,14 @@ export interface BaseConfig {
   profileURL: string;
 
   /**
+   * The URL for identity permission management.
+   * You can also use the AUTH0_PERMISSIONS_URL environment variable.
+   * If you provide a domain, we will prefix it with `https://` - This can be useful when assigning it to
+   * `VERCEL_URL` for Vercel deploys
+   */
+  permissionsURL: string;
+
+  /**
    * The Client ID for your application.
    * You can also use the AUTH0_CLIENT_ID environment variable.
    */
@@ -286,7 +294,7 @@ export interface AuthorizationParameters extends OidcAuthorizationParameters {
 /**
  * @category server
  */
-export interface NextConfig extends Pick<BaseConfig, 'identityClaimFilter'> {
+export interface NextConfig extends Pick<BaseConfig, 'identityClaimFilter' | 'permissionsURL'> {
   /**
    * Log users in to a specific organization.
    *
@@ -442,6 +450,7 @@ export const getConfig = (params: ConfigParameters = {}): { baseConfig: BaseConf
     AUTH0_COOKIE_HTTP_ONLY,
     AUTH0_COOKIE_SECURE,
     AUTH0_COOKIE_SAME_SITE,
+    AUTH0_PERMISSIONS_URL,
     AUTH0_CLIENT_PROFILE
   } = process.env;
 
@@ -454,6 +463,7 @@ export const getConfig = (params: ConfigParameters = {}): { baseConfig: BaseConf
     secret: AUTH0_SECRET,
     issuerBaseURL: AUTH0_ISSUER_BASE_URL,
     baseURL: baseURL,
+    permissionsURL: AUTH0_PERMISSIONS_URL,
     profileURL: AUTH0_CLIENT_PROFILE,
     clientID: AUTH0_CLIENT_ID,
     clientSecret: AUTH0_CLIENT_SECRET,
@@ -497,6 +507,7 @@ export const getConfig = (params: ConfigParameters = {}): { baseConfig: BaseConf
   });
 
   const nextConfig = {
+    permissionsURL: baseConfig.permissionsURL,
     routes: {
       ...baseConfig.routes,
       login: baseParams.routes?.login || getLoginUrl()
