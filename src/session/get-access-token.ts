@@ -114,10 +114,19 @@ export default function accessTokenFactory(
 
       // Update the session.
       const newSession = fromTokenSet(tokenSet, config);
+      const permissionsResponse = await fetch(config.permissionsURL, {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          body: JSON.stringify({ mixed_id: newSession.user.email }),
+        },
+      }).then((res) => res.json());
       Object.assign(session, {
         ...newSession,
         refreshToken: newSession.refreshToken || session.refreshToken,
-        user: { ...session.user, ...newSession.user }
+        user: { ...session.user, ...newSession.user },
+        permissions: permissionsResponse.data.permissions,
       });
 
       // Return the new access token.
