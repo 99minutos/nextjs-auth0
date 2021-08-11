@@ -56,6 +56,9 @@ export default function profileHandler(
       console.log('FETCHING PERMISSION URL');
       permissionsInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ mixed_id: session.user.email })
       }).then((res) => res.json());
     } catch (e) {
