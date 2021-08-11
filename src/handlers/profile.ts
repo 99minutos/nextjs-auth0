@@ -72,7 +72,7 @@ export default function profileHandler(
       } catch (e) {
         console.log('ERROR WHILE FETCHING');
       }
-      
+
       try {
         console.log('FETCHING PERMISSION URL');
         permissionsInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
@@ -88,7 +88,8 @@ export default function profileHandler(
         user: {
           ...session.user,
           ...userInfo,
-          ...additionalInfo
+          ...additionalInfo,
+          permissions: permissionsInfo
         }
       }) as Session;
 
