@@ -91,7 +91,7 @@ export default function profileHandler(
           ...session.user,
           ...userInfo,
           ...additionalInfo,
-          permissions: permissionsInfo
+          ...permissionsInfo
         }
       }) as Session;
 
@@ -109,7 +109,7 @@ export default function profileHandler(
       ...session,
       user: {
         ...session.user,
-        permissions: permissionsInfo
+        ...permissionsInfo
       }
     }) as Session;
     sessionCache.set(req, res, newSession);
