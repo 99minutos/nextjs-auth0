@@ -1,10 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ClientFactory } from '../auth0-session';
-import { AccessTokenError } from '../utils/errors';
-import { intersect, match } from '../utils/array';
-import { SessionCache, fromTokenSet } from '../session';
 import { NextConfig } from '../config';
+import { fromTokenSet, SessionCache } from '../session';
+import { intersect, match } from '../utils/array';
+import { AccessTokenError } from '../utils/errors';
 
 /**
  * Custom options to get an Access Token.
@@ -114,18 +114,11 @@ export default function accessTokenFactory(
 
       // Update the session.
       const newSession = fromTokenSet(tokenSet, config);
-      const permissionsResponse = await fetch(config.permissionsURL, {
-        method: 'POST',
-        cache: 'no-cache',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ mixed_id: newSession.user.email })
-      }).then((res) => res.json());
+
       Object.assign(session, {
         ...newSession,
         refreshToken: newSession.refreshToken || session.refreshToken,
-        user: { ...session.user, ...newSession.user, permissions: permissionsResponse.data.permissions }
+        user: { ...session.user, ...newSession.user }
       });
 
       // Return the new access token.
