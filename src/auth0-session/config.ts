@@ -166,6 +166,12 @@ export interface Config {
      */
     callback: string;
   };
+
+  /**
+   * 99minutos
+   *
+   * */
+  permissionsURL: string;
 }
 
 /**
