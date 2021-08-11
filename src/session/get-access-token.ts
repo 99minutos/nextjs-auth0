@@ -118,9 +118,9 @@ export default function accessTokenFactory(
         method: 'POST',
         cache: 'no-cache',
         headers: {
-          'Content-Type': 'application/json',
-          body: JSON.stringify({ mixed_id: newSession.user.email })
-        }
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ mixed_id: newSession.user.email })
       }).then((res) => res.json());
       Object.assign(session, {
         ...newSession,
