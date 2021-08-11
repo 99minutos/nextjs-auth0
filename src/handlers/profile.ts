@@ -1,6 +1,6 @@
-import { NextApiResponse, NextApiRequest } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { ClientFactory } from '../auth0-session';
-import { SessionCache, Session, fromJson, GetAccessToken } from '../session';
+import { fromJson, GetAccessToken, Session, SessionCache } from '../session';
 import { assertReqRes } from '../utils/assert';
 
 export type AfterRefetch = (req: NextApiRequest, res: NextApiResponse, session: Session) => Promise<Session> | Session;
@@ -51,6 +51,16 @@ export default function profileHandler(
 
     const session = sessionCache.get(req, res) as Session;
     res.setHeader('Cache-Control', 'no-store');
+    let permissionsInfo = {};
+    try {
+      console.log('FETCHING PERMISSION URL');
+      permissionsInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
+        method: 'POST',
+        body: JSON.stringify({ mixed_id: session.user.email })
+      }).then((res) => res.json());
+    } catch (e) {
+      console.log('ERROR WHILE FETCHING PERMISSION URL');
+    }
 
     if (options?.refetch) {
       const { accessToken } = await getAccessToken(req, res);
@@ -61,7 +71,6 @@ export default function profileHandler(
       const client = await getClient();
       const userInfo = await client.userinfo(accessToken);
       let additionalInfo = {};
-      let permissionsInfo = {};
 
       try {
         console.log('FETCHING');
@@ -71,16 +80,6 @@ export default function profileHandler(
         });
       } catch (e) {
         console.log('ERROR WHILE FETCHING');
-      }
-
-      try {
-        console.log('FETCHING PERMISSION URL');
-        permissionsInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
-          method: 'POST',
-          body: JSON.stringify({ mixed_id: session.user.email })
-        }).then((res) => res.json());
-      } catch (e) {
-        console.log('ERROR WHILE FETCHING PERMISSION URL');
       }
 
       let newSession = fromJson({
@@ -103,6 +102,15 @@ export default function profileHandler(
       return;
     }
 
-    res.json(session.user);
+    const newSession = fromJson({
+      ...session,
+      user: {
+        ...session.user,
+        permissions: permissionsInfo
+      }
+    }) as Session;
+    sessionCache.set(req, res, newSession);
+    return res.json(newSession.user);
+    // res.json(session.user);
   };
 }
