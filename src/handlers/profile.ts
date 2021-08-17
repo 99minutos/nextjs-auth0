@@ -51,10 +51,10 @@ export default function profileHandler(
 
     const session = sessionCache.get(req, res) as Session;
     res.setHeader('Cache-Control', 'no-store');
-    let permissionsInfo = {};
+    let identityInfo = {};
     try {
       console.log('FETCHING PERMISSION URL');
-      permissionsInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
+      identityInfo = await fetch(process.env.AUTH0_PERMISSIONS_URL || '', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ export default function profileHandler(
           ...session.user,
           ...userInfo,
           ...additionalInfo,
-          ...permissionsInfo
+          ...identityInfo
         }
       }) as Session;
 
@@ -109,7 +109,7 @@ export default function profileHandler(
       ...session,
       user: {
         ...session.user,
-        ...permissionsInfo
+        ...identityInfo
       }
     }) as Session;
     sessionCache.set(req, res, newSession);
